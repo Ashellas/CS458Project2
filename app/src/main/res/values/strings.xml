@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YourAppName</string>
+    <string name="app_name">CS458</string>
     <string-array name="education_levels">
         <item>High School</item>
         <item>Bachelors</item>
