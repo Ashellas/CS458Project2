@@ -7,8 +7,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,14 +14,11 @@ import com.android.volley.*;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText birthdateEditText;
@@ -44,22 +39,11 @@ public class MainActivity extends AppCompatActivity {
         setupDatePicker();
         setupSpinners();
         setupCheckBoxes();
-        // Add a new EditText for "Any use case of AI that is beneficial in daily life?" before the Send Button
         addAIUseCaseEditText();
 
-        // Setup for Send Button
         setupSendButton();
 
-
     }
-
-
-    private void sendData(JSONObject surveyData) throws IOException, JSONException {
-        String url = "http://10.0.2.2:3000/survey"; // USE THAT URL EFE
-    }
-
-
-
 
     private void setupSendButton() {
         Button sendButton = findViewById(R.id.sendButton);
@@ -82,10 +66,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     surveyData.put("feedbacks", feedbacks);
 
-                    sendData(surveyData);
+                    sendDataToServer(surveyData);
 
-                    // For now, just show the data in a toast
-                    Toast.makeText(MainActivity.this, surveyData.toString(), Toast.LENGTH_LONG).show();
                 } else {
                     // Show alert
                     Toast.makeText(MainActivity.this, "Please fill name, surname, education level, city, gender, and final survey question fields.", Toast.LENGTH_LONG).show();
@@ -111,19 +93,26 @@ public class MainActivity extends AppCompatActivity {
     private void sendDataToServer(JSONObject surveyData) {
         String url = "http://10.0.2.2:5000/submit_survey";
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, surveyData,
+        // Create a new request queue for this context
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Log.d("sendDataToServer", "Sending data: " + surveyData.toString());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                surveyData,
                 response -> Toast.makeText(MainActivity.this, "Survey submitted successfully!", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(MainActivity.this, "Failed to submit survey", Toast.LENGTH_SHORT).show()) {
+                error -> Toast.makeText(MainActivity.this, "Failed to submit survey: " + error.getMessage(), Toast.LENGTH_SHORT).show()) {
             @Override
-            public Map<String, String> getHeaders() {
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
         };
 
-        // Access the RequestQueue through your singleton class.
-        VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        // Add the request to the RequestQueue.
+        requestQueue.add(jsonObjectRequest);
     }
 
 
@@ -136,9 +125,8 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 16, 0, 16); // Add some margin if needed
+        layoutParams.setMargins(0, 16, 0, 16);
 
-        // Add this EditText at the end of all views in the LinearLayout
         aiModelLayout.addView(aiUseCaseEditText, layoutParams);
     }
 
