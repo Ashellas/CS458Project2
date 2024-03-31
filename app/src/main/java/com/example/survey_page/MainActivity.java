@@ -4,8 +4,11 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,11 +16,14 @@ import com.android.volley.*;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 public class MainActivity extends AppCompatActivity {
 
     EditText birthdateEditText;
@@ -44,7 +50,16 @@ public class MainActivity extends AppCompatActivity {
         // Setup for Send Button
         setupSendButton();
 
+
     }
+
+
+    private void sendData(JSONObject surveyData) throws IOException, JSONException {
+        String url = "http://10.0.2.2:3000/survey"; // USE THAT URL EFE
+    }
+
+
+
 
     private void setupSendButton() {
         Button sendButton = findViewById(R.id.sendButton);
@@ -67,8 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     surveyData.put("feedbacks", feedbacks);
 
-                    // Placeholder for sending data
-                    // sendDataToServer(surveyData);
+                    sendData(surveyData);
 
                     // For now, just show the data in a toast
                     Toast.makeText(MainActivity.this, surveyData.toString(), Toast.LENGTH_LONG).show();
