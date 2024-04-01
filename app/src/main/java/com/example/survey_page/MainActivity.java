@@ -65,12 +65,21 @@ public class MainActivity extends AppCompatActivity {
                         feedbacks.put(entry.getKey(), entry.getValue().getText().toString());
                     }
                     surveyData.put("feedbacks", feedbacks);
+                    Toast.makeText(MainActivity.this, "Valid", Toast.LENGTH_LONG).show();
 
+                    if(((EditText) findViewById(R.id.nameEditText)).getText().toString().length() > 50){
+                        Toast.makeText(MainActivity.this, "Invalid", Toast.LENGTH_LONG).show();
+                        sendButton.setText("invalid");
+                        return;
+                    }
+
+                    sendButton.setText("valid");
                     sendDataToServer(surveyData);
 
                 } else {
                     // Show alert
-                    Toast.makeText(MainActivity.this, "Please fill name, surname, education level, city, gender, and final survey question fields.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Invalid", Toast.LENGTH_LONG).show();
+                    sendButton.setText("invalid");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">CS458</string>
     <string-array name="education_levels">
-        <item>High School</item>
-        <item>Bachelors</item>
-        <item>Masters</item>
-        <item>Doctoral</item>
+        <item name = "High School">High School</item>
+        <item name = "Bachelors">Bachelors</item>
+        <item name = "Masters">Masters</item>
+        <item name = "Doctoral">Doctoral</item>
     </string-array>
     <string-array name="gender_options">
         <item>Male</item>
